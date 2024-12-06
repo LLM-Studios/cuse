@@ -8,7 +8,7 @@ export class Linux extends Computer {
     private xdotool = `${this.displayPrefix} xdotool`;
 
     async screenshot(): Promise<string> {
-        const path = `/tmp/outputs/screenshot_${new Date().toISOString()}.png`
+        const path = `./screenshot_${new Date().toISOString()}.png`
         await this.command(`${this.displayPrefix} scrot -p ${path}`)
         return await this.command(`cat ${path} | base64`)
     }
