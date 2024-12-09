@@ -52,3 +52,4 @@ await linux.leftClick();
 
 - Join community discussions, feature requests, or just say hello 👋
 
+https://llmstudios.de/
