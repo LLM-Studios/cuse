@@ -88,6 +88,9 @@ RUN python -m pip install --upgrade pip==23.1.2 setuptools==58.0.4 wheel==0.40.0
 
 # setup desktop env & app
 COPY --chown=$USERNAME:$USERNAME image/ $HOME
+COPY --chown=$USERNAME:$USERNAME api/ $HOME
+
+RUN python -m pip install --no-cache-dir -r requirements.txt
 
 ARG DISPLAY_NUM=1
 ARG HEIGHT=768
