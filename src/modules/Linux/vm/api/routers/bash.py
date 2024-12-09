@@ -1,11 +1,18 @@
-from fastapi import APIRouter
+import subprocess
+from fastapi import APIRouter, HTTPException
 
 router = APIRouter(prefix="/bash", tags=["bash"])
 
 @router.post("/command")
 async def command(command: str) -> str:
-    return f"Executed: {command}"
+    try:
+        return subprocess.getoutput(command)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/restart")
 async def restart() -> None:
-    pass
+    try:
+        raise Exception("Not implemented")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
