@@ -4,32 +4,45 @@
 
 ## ✨ Features
 
-- 💻 Cross-Platform Computer Interaction: screenshots, typing, mouse actions
+- 💻 Computer Interaction: screenshots, typing, mouse actions
 - 📝 Text Editor Operations: view, create, edit files
 - 🔧 Command Execution: terminal commands, restart
 - 🔌 Extensible Framework: customizable functionalities
 - Currently supports **Linux Ubuntu** via local Docker image 🚀
 
+## 🚀 Quickstart
+
+```bash
+npm install cuse
+```
+
+🚧 Docker is required to run the Linux Ubuntu instance.
+
+```bash
+npx cuse linux-setup
+npx cuse linux-start
+```
+
 ## ⚡ Usage
 
-- **Linux Implementation Available**: Use `Linux` class from `@/src/modules/Linux` for setting up Linux Ubuntu interactions
-- Implement methods for:
+- **Linux Implementation Available**: Use the `Computer` class to interact with the Linux Ubuntu instance.
+- Methods for:
   - **Computer Interaction**: `screenshot()`, `key()`, `type()`, `mouseMove()`, `click()`, etc.
   - **Terminal Commands**: `command()`, `restart()`
   - **Text Editor**: `view()`, `create()`, `strReplace()`, `insert()`, `undoEdit()`
 
 ### 💡 Example Implementation
 
-- Example using `Linux` class:
+- Example using `Computer` client:
 
 ```typescript
-import { Linux } from "cuse";
+import { Computer } from "cuse";
 
-const linux = new Linux();
+const computer = new Computer();
 
-await linux.type("Hello, world! 🌍");
-await linux.mouseMove(500, 300);
-await linux.leftClick();
+await computer.type("Hello, world! 🌍");
+await computer.mouseMove(500, 300);
+await computer.leftClick();
 ```
 
 ## 🛣️ Roadmap
@@ -52,4 +65,7 @@ await linux.leftClick();
 
 - Join community discussions, feature requests, or just say hello 👋
 
-https://llmstudios.de/
+## 📚 References
+
+- Created by [LLM Studios](https://llmstudios.de/)
+- Caution Notice [Anthropic](https://github.com/anthropics/anthropic-quickstarts/blob/main/computer-use-demo/README.md)

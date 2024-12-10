@@ -1,3 +1,5 @@
+#!/bin/bash
+
 docker stop computer_use_container >/dev/null 2>&1 || true
 
 docker rm computer_use_container >/dev/null 2>&1 || true
