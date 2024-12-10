@@ -28,7 +28,7 @@ export class Computer extends HttpClient {
         return this.request({
             url: "/computer/key",
             method: "POST",
-            body: { key },
+            query: { key },
         });
     }
 
@@ -36,7 +36,7 @@ export class Computer extends HttpClient {
         return this.request({
             url: "/computer/type",
             method: "POST",
-            body: { text },
+            query: { text },
         });
     }
 
@@ -44,7 +44,7 @@ export class Computer extends HttpClient {
         return this.request({
             url: "/computer/mouse-move",
             method: "POST",
-            body: { x, y },
+            query: { x, y },
         });
     }
 
@@ -76,11 +76,18 @@ export class Computer extends HttpClient {
         });
     }
 
+    public cursorPosition(): Promise<{ x: number, y: number }> {
+        return this.request({
+            url: "/computer/cursor-position",
+            method: "GET",
+        });
+    }
+
     public command(command: string): Promise<string> {
         return this.request({
             url: "/bash/command",
             method: "POST",
-            body: { command },
+            query: { command },
         });
     }
 
@@ -91,11 +98,11 @@ export class Computer extends HttpClient {
         });
     }
 
-    public view(path: string, view_range?: number[]): Promise<void> {
+    public view(path: string, view_range?: number[]): Promise<string> {
         return this.request({
             url: "/text-editor/view",
             method: "POST",
-            body: { path, view_range },
+            query: { path, view_range },
         });
     }
 
@@ -103,7 +110,7 @@ export class Computer extends HttpClient {
         return this.request({
             url: "/text-editor/create",
             method: "POST",
-            body: { path, file_text },
+            query: { path, file_text },
         });
     }
 
@@ -111,7 +118,7 @@ export class Computer extends HttpClient {
         return this.request({
             url: "/text-editor/str-replace",
             method: "POST",
-            body: { path, old_str, new_str },
+            query: { path, old_str, new_str },
         });
     }
 
@@ -119,7 +126,7 @@ export class Computer extends HttpClient {
         return this.request({
             url: "/text-editor/insert",
             method: "POST",
-            body: { path, text, insert_line },
+            query: { path, text, insert_line },
         });
     }
 
@@ -127,7 +134,7 @@ export class Computer extends HttpClient {
         return this.request({
             url: "/text-editor/undo-edit",
             method: "POST",
-            body: { path },
+            query: { path },
         });
     }
 }
