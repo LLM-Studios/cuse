@@ -1,4 +1,4 @@
-# 🚀 AI Computer Use Abstraction Layer
+# 🚀 Cuse
 
 **AI Computer Use Abstraction Layer** — toolkit for implementing computer usage capabilities for AI agents 🤖
 
@@ -68,4 +68,8 @@ await computer.leftClick();
 ## 📚 References
 
 - Created by [LLM Studios](https://llmstudios.de/)
-- Caution Notice [Anthropic](https://github.com/anthropics/anthropic-quickstarts/blob/main/computer-use-demo/README.md)
+- Caution Notice by [Anthropic](https://github.com/anthropics/anthropic-quickstarts/blob/main/computer-use-demo/README.md)
+
+## 🌟 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=LLM-Studios/cuse&type=Date&theme=dark)](https://star-history.com/#LLM-Studios/cuse&Date)
