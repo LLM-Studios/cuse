@@ -1,5 +1,6 @@
 import os
 import subprocess
+import base64
 from fastapi import APIRouter, HTTPException
 from typing import Dict
 
@@ -10,7 +11,8 @@ async def screenshot(display_num: int = 1) -> str:
     try:
         path = f"./screenshot_{subprocess.getoutput('date +%Y-%m-%dT%H:%M:%S')}.png"
         subprocess.getoutput(f"DISPLAY=:{display_num} scrot -p {path}")
-        image = subprocess.getoutput(f"cat {path} | base64")
+        with open(path, 'rb') as image_file:
+            image = base64.b64encode(image_file.read()).decode('utf-8')
         os.remove(path)
         return image
     except Exception as e:
