@@ -1,5 +1,5 @@
 {
-  "name": "cuse",
+  "name": "@llmstudios/cuse",
   "description": "Toolkit for implementing computer usage capabilities for AI agents",
   "keywords": ["computer-usage", "ai-agents", "ai-tools", "ai-toolkit"],
   "version": "0.0.1",
