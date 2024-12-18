@@ -4,14 +4,14 @@ on:
   push:
     branches:
       - main
-    tags:
-      - "v*"
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # This ensures we get all history for versioning
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
@@ -23,6 +23,26 @@ jobs:
 
       - name: Build
         run: bun run build
+
+      - name: Auto-increment version and create tag
+        run: |
+          CURRENT_VERSION=$(jq -r .version package.json)
+          NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+
+          # Update package.json
+          jq ".version = \"$NEW_VERSION\"" package.json > package.json.tmp
+          mv package.json.tmp package.json
+
+          # Configure Git
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          # Commit and tag
+          git add package.json
+          git commit -m "chore: bump version to ${NEW_VERSION}"
+          git tag "v${NEW_VERSION}"
+          git push origin main
+          git push origin "v${NEW_VERSION}"
 
       - uses: actions/setup-node@v4
         with:
