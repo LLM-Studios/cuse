@@ -1,32 +1,47 @@
 {
-  "name": "@llmstudios/cuse",
-  "description": "Toolkit for implementing computer usage capabilities for AI agents",
-  "keywords": ["computer-usage", "ai-agents", "ai-tools", "ai-toolkit"],
-  "version": "0.0.1",
-  "main": "dist/index.js",
-  "module": "src/index.ts",
-  "type": "module",
-  "bin": {
-    "linux-setup": "sh src/modules/Linux/setup.sh",
-    "linux-start": "sh src/modules/Linux/start.sh"
-  },
-  "files": [
-    "dist",
-    "src/modules/Linux/*.sh"
-  ],
-  "scripts": {
-    "build": "bun build src/index.ts --outdir dist"
-  },
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
-  "author": "Matteo von Haxthausen",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/LLM-Studios/cuse.git"
-  }
+	"name": "@llmstudios/cuse",
+	"description": "Toolkit for implementing computer usage capabilities for AI agents",
+	"keywords": [
+		"computer-usage",
+		"ai-agents",
+		"ai-tools",
+		"ai-toolkit"
+	],
+	"version": "0.0.1",
+	"main": "dist/index.js",
+	"module": "src/index.ts",
+	"types": "dist/index.d.ts",
+	"type": "module",
+	"bin": {
+		"cuse": "cli/index.ts"
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "bun build --target node ./package/src/index.ts --outdir dist  && bun run build:declaration",
+		"build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json",
+		"build:docker:linux": "docker build -t llmstudios/cuse/linux computer/Linux"
+	},
+	"devDependencies": {
+		"@types/bun": "latest",
+		"@types/yargs": "^17.0.33",
+		"typescript": "^5.2.2"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	},
+	"author": "Matteo von Haxthausen",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/LLM-Studios/cuse.git"
+	},
+	"dependencies": {
+		"@types/dockerode": "^3.3.32",
+		"dockerode": "^4.0.2",
+		"execa": "^9.5.2",
+		"inquirer": "^12.2.0",
+		"yargs": "^17.7.2"
+	}
 }
