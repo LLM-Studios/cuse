@@ -1,1 +1,1 @@
-export { default as Cuse } from "./modules/Computer";
+export { default as Computer } from "./modules/Computer";

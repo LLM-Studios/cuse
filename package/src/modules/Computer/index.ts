@@ -1,23 +1,32 @@
 import { HttpClient } from "../../lib/http";
+import { makeTools } from "./tools";
+
+interface ComputerConfig {
+	baseUrl: string;
+	displayNum: number;
+	width: number;
+	height: number;
+}
+
+const defaults: ComputerConfig = {
+	baseUrl: "http://localhost:8000",
+	displayNum: 1,
+	width: 1024,
+	height: 768,
+};
 
 export default class Computer {
 	public displayNum: number;
 	public width: number;
 	public height: number;
 	private httpClient: HttpClient;
+	public tools = makeTools(this);
 
-	constructor(
-		config = {
-			baseUrl: "http://localhost:8000",
-			displayNum: 1,
-			width: 1024,
-			height: 768,
-		}
-	) {
-		this.httpClient = new HttpClient(config.baseUrl);
-		this.displayNum = config.displayNum;
-		this.width = config.width;
-		this.height = config.height;
+	constructor(config?: ComputerConfig) {
+		this.httpClient = new HttpClient(config?.baseUrl || defaults.baseUrl);
+		this.displayNum = config?.displayNum || defaults.displayNum;
+		this.width = config?.width || defaults.width;
+		this.height = config?.height || defaults.height;
 	}
 
 	public screenshot(): Promise<string> {
