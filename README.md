@@ -12,15 +12,39 @@
 
 ## 🚀 Quickstart
 
+Setup and start the Linux Ubuntu instance:
+
 ```bash
-npm install cuse
+npx @llmstudios/cuse start
 ```
 
-🚧 Docker is required to run the Linux Ubuntu instance.
+Install the Cuse package:
 
 ```bash
-npx cuse linux-setup
-npx cuse linux-start
+npm install @llmstudios/cuse
+```
+
+Create a `Computer` instance
+
+```typescript
+import { Computer } from "@llmstudios/cuse";
+
+const computer = new Computer();
+```
+
+Use the `computer.tools` in your AI SDK tool parameter
+
+```typescript
+const tools = computer.tools;
+
+const stream = streamText({
+	model: anthropic("claude-3-5-sonnet-latest"),
+	messages,
+	tools: {
+		...computer.tools,
+	},
+	maxSteps: 30,
+});
 ```
 
 ## ⚡ Usage
@@ -30,20 +54,6 @@ npx cuse linux-start
   - **Computer Interaction**: `screenshot()`, `key()`, `type()`, `mouseMove()`, `click()`, etc.
   - **Terminal Commands**: `command()`, `restart()`
   - **Text Editor**: `view()`, `create()`, `strReplace()`, `insert()`, `undoEdit()`
-
-### 💡 Example Implementation
-
-- Example using `Computer` client:
-
-```typescript
-import { Computer } from "cuse";
-
-const computer = new Computer();
-
-await computer.type("Hello, world! 🌍");
-await computer.mouseMove(500, 300);
-await computer.leftClick();
-```
 
 ## 🛣️ Roadmap
 
