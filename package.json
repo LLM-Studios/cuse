@@ -13,15 +13,16 @@
 	"types": "dist/index.d.ts",
 	"type": "module",
 	"bin": {
-		"cuse": "cli/index.ts"
+		"cuse": "dist/cli/index.js"
 	},
 	"files": [
 		"dist"
 	],
 	"scripts": {
-		"build": "bun build --target node ./package/src/index.ts --outdir dist  && bun run build:declaration",
+		"build": "bun build --target node ./package/src/index.ts --outdir dist && bun run build:cli && bun run build:declaration",
 		"build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json",
-		"build:docker:linux": "docker build -t llmstudios/cuse/linux computer/Linux"
+		"build:docker:linux": "docker build -t llmstudios/cuse/linux computer/Linux",
+		"build:cli": "bun build --target node ./cli/index.ts --outdir dist/cli"
 	},
 	"devDependencies": {
 		"@types/bun": "latest",
@@ -44,6 +45,7 @@
 		"dockerode": "^4.0.2",
 		"execa": "^9.5.2",
 		"inquirer": "^12.2.0",
+		"shx": "^0.3.4",
 		"yargs": "^17.7.2"
 	}
 }

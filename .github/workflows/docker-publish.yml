@@ -9,10 +9,10 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME_LINUX: ${{ github.repository }}/linux
 
 jobs:
-  build-and-push:
+  build-and-push-linux:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -33,7 +33,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LINUX }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
