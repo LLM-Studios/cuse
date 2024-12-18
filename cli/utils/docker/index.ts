@@ -1,5 +1,11 @@
 import { execa } from "execa";
-import { imagesByOS } from "../../../config/images.js";
+import {
+	imagesByOS,
+	DEFAULT_PORT_MAPPINGS,
+	DEFAULT_IDENTIFIER,
+	DEFAULT_PORTS,
+	BASE_URL,
+} from "../../../config/constants.js";
 import Docker from "dockerode";
 
 interface ComputerInfo {
@@ -8,7 +14,7 @@ interface ComputerInfo {
 	containerId: string;
 	ports: Record<number, number>;
 	api: string;
-	vnc: string;
+	novnc: string;
 }
 
 const docker = new Docker();
@@ -48,15 +54,9 @@ async function containerIsRunning(name: string): Promise<boolean> {
 
 /**
  * Parse `docker port <container>` output to find host ports.
- * The output lines look like:
- * "5900/tcp -> 0.0.0.0:32768"
  */
 async function getHostPorts(containerIdOrName: string) {
 	const { stdout } = await execa("docker", ["port", containerIdOrName]);
-	// Example lines:
-	// 5900/tcp -> 0.0.0.0:32768
-	// 6080/tcp -> 0.0.0.0:32769
-	// 8000/tcp -> 0.0.0.0:32770
 
 	const ports: Record<number, number> = {};
 	for (const line of stdout.trim().split("\n")) {
@@ -82,7 +82,7 @@ async function getHostPorts(containerIdOrName: string) {
  */
 export async function startComputer(
 	os: string = "linux",
-	identifier: string
+	identifier: string = DEFAULT_IDENTIFIER
 ): Promise<ComputerInfo> {
 	const image = imagesByOS[os];
 	if (!image) {
@@ -102,24 +102,49 @@ export async function startComputer(
 			return getByIdentifier(identifier);
 		}
 	} else {
-		// Container does not exist, so run a new named one with ephemeral ports
+		// Container does not exist, so run a new named one with fixed ports for default container
+		// or ephemeral ports for other containers
+		const portMappings =
+			identifier === DEFAULT_IDENTIFIER
+				? [
+						`${DEFAULT_PORT_MAPPINGS.VNC}:${DEFAULT_PORTS.VNC}`,
+						`${DEFAULT_PORT_MAPPINGS.NOVNC}:${DEFAULT_PORTS.NOVNC}`,
+						`${DEFAULT_PORT_MAPPINGS.API}:${DEFAULT_PORTS.API}`,
+				  ]
+				: [
+						`0:${DEFAULT_PORTS.VNC}`,
+						`0:${DEFAULT_PORTS.NOVNC}`,
+						`0:${DEFAULT_PORTS.API}`,
+				  ];
+
 		const { stdout } = await execa("docker", [
 			"run",
 			"-d",
 			"--name",
 			identifier,
 			"-p",
-			"0:5900",
+			portMappings[0],
 			"-p",
-			"0:6080",
+			portMappings[1],
 			"-p",
-			"0:8000",
+			portMappings[2],
 			image,
 		]);
 
 		return getByIdentifier(identifier);
 	}
 }
+
+export const startComputerWithIdentifier = async (
+	identifier: string
+): Promise<ComputerInfo> => {
+	const container = await docker.getContainer(identifier);
+	const running = await containerIsRunning(identifier);
+	if (!running) {
+		await container.start();
+	}
+	return getByIdentifier(identifier);
+};
 
 const getComputerInfo = (container: Docker.ContainerInfo): ComputerInfo => {
 	const os =
@@ -138,21 +163,23 @@ const getComputerInfo = (container: Docker.ContainerInfo): ComputerInfo => {
 	}
 
 	// Derive a URL based on the 8000 port mapping, if available
-	const mainPort = ports[8000];
-	const api = mainPort ? `http://localhost:${mainPort}` : "";
-	const vnc = ports[6080] ? `http://localhost:${ports[6080]}` : "";
+	const mainPort = ports[DEFAULT_PORTS.API];
+	const api = mainPort ? `${BASE_URL}:${mainPort}` : "";
+	const novnc = ports[DEFAULT_PORTS.NOVNC]
+		? `${BASE_URL}:${ports[DEFAULT_PORTS.NOVNC]}`
+		: "";
 	return {
 		identifier: container.Names[0].replace("/", "") || "unnamed",
 		os,
 		containerId: container.Id.slice(0, 12),
 		ports,
 		api,
-		vnc,
+		novnc,
 	};
 };
 
 const getByIdentifier = async (identifier: string): Promise<ComputerInfo> => {
-	const all = await getAllRunningComputers();
+	const all = await getAllComputers();
 	const computer = all.find((c) => c.identifier === identifier);
 	if (!computer) {
 		throw new Error(`Computer with identifier "${identifier}" not found.`);
@@ -163,6 +190,17 @@ const getByIdentifier = async (identifier: string): Promise<ComputerInfo> => {
 export async function getAllRunningComputers(): Promise<ComputerInfo[]> {
 	const containers = await docker.listContainers({
 		all: false, // only running containers
+		filters: {
+			ancestor: Object.values(imagesByOS),
+		},
+	});
+
+	return containers.map(getComputerInfo);
+}
+
+export async function getAllComputers(): Promise<ComputerInfo[]> {
+	const containers = await docker.listContainers({
+		all: true,
 		filters: {
 			ancestor: Object.values(imagesByOS),
 		},
