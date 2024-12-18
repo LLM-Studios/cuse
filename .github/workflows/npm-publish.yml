@@ -8,10 +8,14 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # This ensures we get all history for versioning
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
@@ -41,8 +45,10 @@ jobs:
           git add package.json
           git commit -m "chore: bump version to ${NEW_VERSION}"
           git tag "v${NEW_VERSION}"
-          git push origin main
-          git push origin "v${NEW_VERSION}"
+
+          # Update push commands to use token
+          git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" main
+          git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" "v${NEW_VERSION}"
 
       - uses: actions/setup-node@v4
         with:
