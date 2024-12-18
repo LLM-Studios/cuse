@@ -9,7 +9,7 @@ interface ComputerConfig {
 }
 
 const defaults: ComputerConfig = {
-	baseUrl: "http://localhost:8000",
+	baseUrl: "http://localhost:9001",
 	displayNum: 1,
 	width: 1024,
 	height: 768,
@@ -22,7 +22,7 @@ export default class Computer {
 	private httpClient: HttpClient;
 	public tools = makeTools(this);
 
-	constructor(config?: ComputerConfig) {
+	constructor(config?: Partial<ComputerConfig>) {
 		this.httpClient = new HttpClient(config?.baseUrl || defaults.baseUrl);
 		this.displayNum = config?.displayNum || defaults.displayNum;
 		this.width = config?.width || defaults.width;
