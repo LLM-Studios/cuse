@@ -1,5 +1,9 @@
 FROM docker.io/ubuntu:22.04
 
+LABEL name="@llmstudios/cuse/linux"
+LABEL version="0.0.1"
+LABEL description="Linux computer with Python and noVNC"
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DEBIAN_PRIORITY=high
 
