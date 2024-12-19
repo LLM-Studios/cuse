@@ -2,7 +2,7 @@
  * A mapping from supported OS to their corresponding Docker image.
  */
 export const imagesByOS: Record<string, string> = {
-	linux: process.env.LINUX_IMAGE || "llmstudios/cuse/linux",
+	linux: process.env.LINUX_IMAGE || "ghcr.io/llm-studios/cuse/linux:main",
 };
 
 export const DEFAULT_PORT_MAPPINGS = {

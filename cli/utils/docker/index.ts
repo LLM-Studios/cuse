@@ -117,19 +117,10 @@ export async function startComputer(
 						`0:${DEFAULT_PORTS.API}`,
 				  ];
 
-		const { stdout } = await execa("docker", [
-			"run",
-			"-d",
-			"--name",
-			identifier,
-			"-p",
-			portMappings[0],
-			"-p",
-			portMappings[1],
-			"-p",
-			portMappings[2],
-			image,
-		]);
+		await execa({
+			stdout: "inherit",
+			stderr: "inherit",
+		})`docker run -d --name ${identifier} -p ${portMappings[0]} -p ${portMappings[1]} -p ${portMappings[2]} ${image}`;
 
 		return getByIdentifier(identifier);
 	}
